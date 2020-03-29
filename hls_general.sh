@@ -1,16 +1,28 @@
 #!/bin/bash
 
-BASEDIR="/data/video"
+BASEDIR="/root/test_ffmpeg"
+
 
 function hlsfile(){
 	file="$1"
 	if [[ "${file##*.}" == "mp4" || "${file##*.}" == "mkv" ]]; then
 		filename="${file##*/}"
 		m3u8dir="${file%/*}/__${filename}__"
-		if [[ ! -d "${m3u8dir}" && ! -f "${file}.aria2" ]]; then
-			mkdir -p "${m3u8dir}"
-			ffmpeg -i "${file}" -c copy -bsf:v h264_mp4toannexb -hls_time 6 -hls_list_size 0 -hls_segment_filename "${m3u8dir}/%04d.ts" "${m3u8dir}/video.m3u8" > /dev/null 2>&1
-			# echo 'Rikka' > "${file}"
+		m3u8file="${m3u8dir}/video.m3u8"
+		video_duration=$(ffmpeg -i "${file}" 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//)
+		m3u8_duration=$(ffmpeg -i "${m3u8file}" 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//)
+		echo "${filename}  原视频长度：${video_duration} 当前切片长度：${m3u8_duration}"
+		if [[ $video_duration != $m3u8_duration && ! -f "${file}.aria2"  ]]; then
+			if [ ! -d "${m3u8dir}" ]; then
+				mkdir -p "${m3u8dir}"
+			fi
+
+			
+			if  ! cat ${m3u8file} | grep "#EXT-X-ENDLIST" &>/dev/null ; then
+				ffmpeg -i "${file}" -c copy -bsf:v h264_mp4toannexb -hls_time 6 -hls_list_size 0 -hls_segment_filename "${m3u8dir}/%04d.ts" "${m3u8file}" > /dev/null 2>&1
+				echo "${file}  完成切片"
+			fi
+			
 		fi
 	fi
 }
