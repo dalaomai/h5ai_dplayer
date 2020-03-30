@@ -9,10 +9,10 @@ function hlsfile(){
 		filename="${file##*/}"
 		m3u8dir="${file%/*}/__${filename}__"
 		m3u8file="${m3u8dir}/video.m3u8"
-		video_duration=$(ffmpeg -i "${file}" 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//)
+		# video_duration=$(ffmpeg -i "${file}" 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//)
 		m3u8_duration=$(ffmpeg -i "${m3u8file}" 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//)
-		echo "${filename}  原视频长度：${video_duration} 当前切片长度：${m3u8_duration}"
-		if [[ $video_duration != $m3u8_duration && ! -f "${file}.aria2"  ]]; then
+		echo "${filename}  当前切片长度：${m3u8_duration}"
+		if [[ ! -f "${file}.aria2"  ]]; then
 			if [ ! -d "${m3u8dir}" ]; then
 				mkdir -p "${m3u8dir}"
 			fi
