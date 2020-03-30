@@ -46,4 +46,5 @@ function scandir(){
 }
 scandir "${BASEDIR}"
 
-echo "hls finish"
+echo "休眠后继续"
+sleep 12h
