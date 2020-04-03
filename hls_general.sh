@@ -28,6 +28,7 @@ function hlsfile(){
 				
 				mv -f ${tmp_m3u8dir}/* ${m3u8dir}
 				echo "${file}  完成切片"
+				rm -rf ${tmp_m3u8dir}
 			fi
 			
 		fi
