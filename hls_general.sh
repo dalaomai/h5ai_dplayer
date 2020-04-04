@@ -5,7 +5,7 @@ BASEDIR="/mnt/g_upenn"
 
 function hlsfile(){
 	file="$1"
-	if [[ "${file##*.}" == "mp4" || "${file##*.}" == "mkv" ]]; then
+	if [[ "${file##*.}" == "mkv" ]]; then
 		filename="${file##*/}"
 		m3u8dir="${file%/*}/__${filename}__"
 		m3u8file="${m3u8dir}/video.m3u8"
